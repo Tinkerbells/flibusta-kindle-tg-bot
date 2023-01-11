@@ -2,7 +2,7 @@ import { Menu, MenuRange } from '@grammyjs/menu'
 import { env } from 'process'
 import { BotContext } from '..'
 import { LIMIT } from '../consts'
-import { bookIfnoMenu } from '../menus/bookInfoMenu'
+import { bookInfoMenu } from '../menus/bookInfoMenu'
 import { getBook } from '../scrapper'
 import { IBookListItem } from '../types/book'
 
@@ -27,7 +27,7 @@ const createPagination = (
   maxPages: number,
   page: number
 ) => {
-  if (page == 1) {
+  if (page == 1 && maxPages !== 1) {
     range.text('➡️', async (ctx) => {
       ctx.session.page++
       ctx.menu.update()
@@ -45,7 +45,7 @@ const createPagination = (
         ctx.menu.update()
       })
   }
-  if (page == maxPages) {
+  if (page == maxPages && maxPages !== 1) {
     range.text('⬅️', async (ctx) => {
       ctx.session.page--
       ctx.menu.update()
@@ -75,10 +75,10 @@ const createBooksList = (
           ctx.replyWithPhoto(url + fetchedBook.image, {
             caption: text,
             parse_mode: 'HTML',
-            reply_markup: bookIfnoMenu,
+            reply_markup: bookInfoMenu,
           })
         } else {
-          ctx.reply(text, { parse_mode: 'HTML', reply_markup: bookIfnoMenu })
+          ctx.reply(text, { parse_mode: 'HTML', reply_markup: bookInfoMenu })
         }
         await ctx.answerCallbackQuery()
         await ctx.deleteMessage()

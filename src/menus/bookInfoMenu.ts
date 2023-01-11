@@ -1,7 +1,10 @@
 import { Menu } from '@grammyjs/menu'
 import { BotContext } from '..'
 import { createBookInfoMenu } from '../helpers/createBookInfoMenu'
+import { downloadMenu } from './downloadMenu'
 
-export const bookIfnoMenu = new Menu<BotContext>('book-info-menu')
+export const bookInfoMenu = new Menu<BotContext>('book-info-menu')
 
-bookIfnoMenu.dynamic((ctx, range) => createBookInfoMenu(ctx, range))
+bookInfoMenu.dynamic((ctx, range) => createBookInfoMenu(ctx, range))
+
+bookInfoMenu.register(downloadMenu)

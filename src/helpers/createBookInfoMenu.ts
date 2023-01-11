@@ -9,7 +9,7 @@ export const createBookInfoMenu = (
   ctx: BotContext,
   range: MenuRange<BotContext>
 ) => {
-  createDownloads(ctx.session.book, range).row()
+  range.submenu(ctx.t('download'), 'download-menu').row()
   if (
     ctx.session.book.downloadLinks.filter(
       (link) => link === 'download' || 'epub'
@@ -21,7 +21,7 @@ export const createBookInfoMenu = (
       ? 'epub'
       : 'pdf'
     range
-      .text(ctx.t('book_sent_to_kindle'), (ctx, next) => {
+      .text(ctx.t('book_sent_to_kindle'), (ctx) => {
         downloadBook(
           `${ctx.session.book.href}/${ctx.session.bookFileExtension}`,
           ctx
@@ -32,22 +32,10 @@ export const createBookInfoMenu = (
       })
       .row()
   }
-  range.text(ctx.t('back'), async (ctx) => {
-    await backToMain(ctx)
-  })
-  return range
-}
-
-const createDownloads = (book: IBook, range: MenuRange<BotContext>) => {
-  book.downloadLinks.map((link) => {
-    range.text(link === 'download' ? '📥 pdf' : '📥 ' + link, (ctx) => {
-      ctx.replyWithDocument(
-        new InputFile(
-          new URL(`${book.href}/${link}`),
-          `${book.title}.${link === 'download' ? 'pdf' : link}`
-        )
-      )
+  range
+    .text(ctx.t('back'), async (ctx) => {
+      await backToMain(ctx)
     })
-  })
+    .row()
   return range
 }
