@@ -45,7 +45,6 @@ sendBookScene.wait().setup((scene) => {
         ).then((res) => {
           deleteBook(ctx.session.bookFilePath)
           ctx.session.bookFilePath = ''
-          console.log(ctx)
           ctx.reply(ctx.t('email_sended'))
         })
       } else {
@@ -53,4 +52,8 @@ sendBookScene.wait().setup((scene) => {
       }
     }
   })
+})
+
+sendBookScene.do(async (ctx) => {
+  ctx.scene.exit()
 })
