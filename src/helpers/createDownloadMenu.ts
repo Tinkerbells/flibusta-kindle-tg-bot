@@ -8,7 +8,7 @@ export const createDownloadMenu = (
   range: MenuRange<BotContext>
 ) => {
   const book = ctx.session.book
-  book.downloadLinks.map((link) => {
+  book?.downloadLinks.map((link) => {
     range
       .text(link === 'download' ? '📥 pdf' : '📥 ' + link, (ctx) => {
         ctx.replyWithDocument(

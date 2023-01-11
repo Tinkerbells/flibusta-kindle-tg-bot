@@ -1,27 +1,44 @@
 import { Scene } from 'grammy-scenes'
+import { client } from '../db/client'
 import { BotContext } from '../index'
 import { booksMenu } from '../menus/booksPaginationMenu'
 import { emailSchema } from '../schemas/emailSchema'
 import { deleteBook } from '../utils/deleteBook'
+import { getExtension } from '../utils/getExtension'
 import { sendBook } from '../utils/sendBook'
 
 export const sendBookScene = new Scene<BotContext>('send-book')
 
-sendBookScene.label('start')
-
-sendBookScene.do(async (ctx) => {
-  await ctx.reply(ctx.t('email_request'), {
-    reply_markup: {
-      inline_keyboard: [[{ text: ctx.t('back'), callback_data: 'back' }]],
-    },
+sendBookScene.do(async (ctx, next) => {
+  const user = await client.user.findUnique({
+    where: { userId: ctx.session.userId },
   })
+  if (!user?.email) {
+    await ctx.reply(ctx.t('email_request'), {
+      reply_markup: {
+        inline_keyboard: [[{ text: ctx.t('back'), callback_data: 'back' }]],
+      },
+    })
+  } else {
+    sendBook(
+      `${ctx.session.book.title}.${getExtension(ctx.session.book.fileName)}`,
+      ctx.session.book.filePath,
+      user.email
+    ).then(() => {
+      deleteBook(ctx.session.book.filePath)
+      ctx.session.book.filePath = ''
+      ctx.reply(ctx.t('email_sended'))
+    })
+    ctx.scene.exit()
+  }
 })
 
 sendBookScene.wait().setup((scene) => {
   scene.on('callback_query:data', async (ctx) => {
     const cb = ctx.callbackQuery.data
     if (cb === 'back') {
-      deleteBook(ctx.session.bookFilePath)
+      ctx.deleteMessage()
+      deleteBook(ctx.session.book.filePath)
       await ctx.reply(
         ctx.t('book_fetching_success', {
           count: ctx.session.books.length,
@@ -35,16 +52,21 @@ sendBookScene.wait().setup((scene) => {
     ctx.scene.resume()
   })
   scene.on('message:text', async (ctx) => {
-    if (ctx.session.bookFilePath) {
+    await client.user.create({
+      data: { userId: ctx.from.id.toString(), email: ctx.message.text },
+    })
+    if (ctx.session.book.filePath.length > 1) {
       const email = ctx.message.text
       if (emailSchema.safeParse(email).success) {
         sendBook(
-          `${ctx.session.book.title}.${ctx.session.bookFileExtension}`,
-          ctx.session.bookFilePath,
+          `${ctx.session.book.title}.${getExtension(
+            ctx.session.book.fileName
+          )}`,
+          ctx.session.book.filePath,
           email
-        ).then((res) => {
-          deleteBook(ctx.session.bookFilePath)
-          ctx.session.bookFilePath = ''
+        ).then(() => {
+          deleteBook(ctx.session.book.filePath)
+          ctx.session.book.filePath = ''
           ctx.reply(ctx.t('email_sended'))
         })
       } else {

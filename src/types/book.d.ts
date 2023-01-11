@@ -9,6 +9,8 @@ export interface IBook {
   genres: string
   downloadLinks: string[]
   rate: string
+  filePath: string
+  fileName: string
 }
 
 interface IBookListItem {

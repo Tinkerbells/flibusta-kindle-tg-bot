@@ -1,6 +1,4 @@
-import { rejects } from 'assert'
 import { DownloaderHelper } from 'node-downloader-helper'
-import { resolve } from 'path'
 import { BotContext } from '..'
 import { env } from '../env/env'
 
@@ -8,9 +6,8 @@ export const downloadBook = async (url: string, ctx: BotContext) => {
   const dl = new DownloaderHelper(url, env.DOWNLOAD_DIR)
   return new Promise((resolve, reject) => {
     dl.on('end', (info) => {
-      const path = info.filePath
-      ctx.session.bookFilePath = path
-      ctx.session.bookFileName = info.fileName
+      ctx.session.book.filePath = info.filePath
+      ctx.session.book.fileName = info.fileName
       resolve(true)
     })
     dl.on('error', (err) => {

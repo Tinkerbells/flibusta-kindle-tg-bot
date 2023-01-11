@@ -70,6 +70,8 @@ export const getBook = async (bookLink: string) => {
       (e) => e.textContent || ''
     ).join(', '),
     rate: document.querySelector('#newann')?.textContent || '',
+    filePath: '',
+    fileName: '',
   }))
 
   book.downloadLinks = getDownloadFormats(book.downloadLinks)
