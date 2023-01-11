@@ -45,8 +45,15 @@ bot.use(
 )
 bot.use(i18n)
 bot.use(scenes.manager())
-bot.command('get', async (ctx) => {
+bot.command('start', async (ctx) => {
   await ctx.reply(ctx.t('welcome'))
+})
+
+bot.command('help', async (ctx) => {
+  await ctx.reply(ctx.t('help'))
+})
+
+bot.command('get', async (ctx) => {
   await ctx.scenes.enter('get-book-scene')
 })
 
