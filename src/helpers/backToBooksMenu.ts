@@ -1,7 +1,7 @@
 import { BotContext } from '..'
 import { booksMenu } from '../menus/booksPaginationMenu'
 
-export const backToMain = async (ctx: BotContext) => {
+export const backToBooksMenu = async (ctx: BotContext) => {
   await ctx.reply(
     `<b>${ctx.t('book_fetching_success', {
       count: ctx.session.books.length,
