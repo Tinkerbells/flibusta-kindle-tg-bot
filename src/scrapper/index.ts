@@ -63,7 +63,10 @@ export const getBook = async (bookLink: string) => {
     size: document.querySelector("div[class^='g-'] > span")?.textContent || '',
     downloadLinks: Array.from(
       document.querySelectorAll("div[class^='g-'] > a"),
-      (e) => e.getAttribute('href') || ''
+      (e) =>
+        e.innerHTML.match('скачать')
+          ? e.innerHTML.replace(/[()]/g, '').replace('скачать ', '')
+          : e.getAttribute('href') || ''
     ),
     genres: Array.from(
       document.querySelectorAll('a.genre'),

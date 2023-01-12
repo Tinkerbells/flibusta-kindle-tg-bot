@@ -10,11 +10,11 @@ export const createDownloadMenu = (
   const book = ctx.session.book
   book?.downloadLinks.map((link) => {
     range
-      .text(link === 'download' ? '📥 pdf' : '📥 ' + link, (ctx) => {
+      .text('📥 ' + link, (ctx) => {
         ctx.replyWithDocument(
           new InputFile(
             new URL(`${book.href}/${link}`),
-            `${book.title}.${link === 'download' ? 'pdf' : link}`
+            `${book.title}.${link}`
           )
         )
       })
