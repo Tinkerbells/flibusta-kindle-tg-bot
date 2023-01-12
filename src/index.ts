@@ -5,7 +5,6 @@ import { IBook, IBookListItem } from './types/book'
 import { scenes } from './scenes/scenes'
 import { booksMenu } from './menus/booksPaginationMenu'
 import { env } from './env/env'
-import { client } from './db/client'
 
 export type SessionData = ScenesSessionFlavor & {
   userId: string
@@ -42,18 +41,15 @@ bot.use(booksMenu)
 bot.use(scenes)
 
 bot.command('start', async (ctx) => {
-  ctx.session.userId = ctx.from?.id.toString() || ''
   await ctx.reply(ctx.t('welcome'))
 })
 
 bot.command('help', async (ctx) => {
-  ctx.session.userId = ctx.from?.id.toString() || ''
   await ctx.reply(ctx.t('help'))
 })
 
-bot.command('get', async (ctx) => {
+bot.command('book', async (ctx) => {
   ctx.session.userId = ctx.from?.id.toString() || ''
-  console.log(ctx.session.userId)
   await ctx.scenes.enter('get-book-scene')
 })
 
