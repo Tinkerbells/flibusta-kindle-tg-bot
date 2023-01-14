@@ -16,33 +16,22 @@ changeEmailScene.wait().on('message:text', async (ctx) => {
     where: { userId: userId },
   })
   if (emailSchema.safeParse(email).success && email.includes('@kindle.com')) {
-    if (user) {
-      await client.user
-       .update({
-          where: {
-            userId: userId,
-          },
-          data: {
-            email: email,
-          },
-        })
-        .then(() => {
+    await client.user
+      .update({
+        where: {
+          userId: userId,
+        },
+        data: {
+          email: email,
+        },
+      })
+      .then(() => {
+        if (user?.email) {
           ctx.reply(ctx.t('email_changed'))
-          ctx.scene.exit()
-        })
-    } else {
-      await client.user
-        .create({
-          data: {
-            userId: userId,
-            email: email,
-          },
-        })
-        .then(() => {
-          ctx.reply(ctx.t('email_saved'))
-          ctx.scene.exit()
-        })
-    }
+        }
+        ctx.reply(ctx.t('email_saved'))
+      })
+    ctx.scene.exit()
   } else {
     await ctx.reply(ctx.t('email_error'))
   }

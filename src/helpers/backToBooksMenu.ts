@@ -3,7 +3,7 @@ import { booksListMenu } from '../menus'
 
 export const backToBooksMenu = async (ctx: BotContext) => {
   await ctx.reply(
-    `<b>${ctx.t('book_fetching_success', {
+    `<b>${ctx.t('book_search_success', {
       count: ctx.session.books.length,
     })}</b>`,
     {

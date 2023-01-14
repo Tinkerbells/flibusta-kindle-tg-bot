@@ -8,7 +8,17 @@ export const getAuthor = async (authorLink: string) => {
   const authorUrl = `${url}/${authorLink}?lang=__&order=a&hg1=1&hg=1&sa1=1&hr1=1`
   const browser: Browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto(authorUrl)
+  await page.goto(authorUrl).then(() => {})
+
+  page.on('error', async (err) => {
+    console.log('error happen at the page: ', err)
+    await browser.close()
+  })
+
+  page.on('pageerror', async (pageerr) => {
+    console.log('pageerror occurred: ', pageerr)
+    await browser.close()
+  })
 
   const author: IAuthor = await page.evaluate(() => {
     const ratings = Array.from(
@@ -37,7 +47,6 @@ export const getAuthor = async (authorLink: string) => {
       books: books,
     }
   })
-  console.log(author)
   await browser.close()
   return author
 }

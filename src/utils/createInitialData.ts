@@ -1,9 +1,11 @@
 export const createInitialData = () => {
   return {
+    back: '',
+    userId: '',
     kindleEmail: '',
     page: 1,
     book: {
-      href: '',
+      url: '',
       title: '',
       author: '',
       authorLink: '',
@@ -17,8 +19,7 @@ export const createInitialData = () => {
       fileName: '',
     },
     books: [],
-    bookFilePath: '',
-    bookFileName: '',
-    bookFileExtension: '',
+    author: { url: '', title: '', books: [] },
+    authors: [],
   }
 }

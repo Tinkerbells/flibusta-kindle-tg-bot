@@ -1,7 +1,7 @@
 import { Scene } from 'grammy-scenes'
 import { BotContext } from '../index'
 import { authorListMenu } from '../menus'
-import { getAuthors } from '../scrapper/getAuthors'
+import { getAuthors } from '../scrapper'
 
 export const getAuthorScene = new Scene<BotContext>('get-author')
 
@@ -12,21 +12,28 @@ getAuthorScene.do(async (ctx) => {
 })
 
 getAuthorScene.wait().on('message:text', async (ctx) => {
-  ctx.session.authors = await getAuthors(ctx.message.text)
-  if (ctx.session.authors.length >= 1) {
-    ctx.session.page = 1
-    await ctx.reply(
-      ctx.t('author_search_success', {
-        count: ctx.session.authors.length,
-      }),
-      {
+  if (ctx.message.text[0] !== '/') {
+    ctx.session.authors = await getAuthors(ctx.message.text)
+    if (ctx.session.authors.length >= 1) {
+      ctx.session.page = 1
+      await ctx.reply(
+        ctx.t('author_search_success', {
+          count: ctx.session.authors.length,
+        }),
+        {
+          parse_mode: 'HTML',
+          reply_markup: authorListMenu,
+        }
+      )
+      ctx.scene.exit()
+    } else {
+      await ctx.reply(ctx.t('author_search_fail'), {
         parse_mode: 'HTML',
-        reply_markup: authorListMenu,
-      }
-    )
-    ctx.scene.resume()
+      })
+      ctx.scene.exit()
+    }
   } else {
-    await ctx.reply(ctx.t('author_search_fail'), {
+    await ctx.reply(ctx.t('search_error'), {
       parse_mode: 'HTML',
     })
     ctx.scene.exit()

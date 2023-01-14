@@ -2,8 +2,9 @@ import { MenuRange } from '@grammyjs/menu'
 import { env } from 'process'
 import { BotContext } from '..'
 import { LIMIT } from '../consts'
+import { client } from '../db/client'
 import { authorBooksMenu } from '../menus/authorBooksMenu'
-import { getAuthor } from '../scrapper/getAuthor'
+import { getAuthor } from '../scrapper'
 import { IAuthorListItem } from '../types/author'
 import { createPagination } from './createPagination'
 
@@ -30,10 +31,13 @@ const createAuthorsList = (
   authors.slice(page * limit - limit, page * limit).map((author) =>
     range
       .text('📙' + author.title, async (ctx) => {
+        const user = await client.user.findUnique({
+          where: { userId: ctx.from.id.toString() },
+        })
         const fetchedAuthor = await getAuthor(author.url)
         ctx.session.author = fetchedAuthor
         ctx.session.page = 1
-        if (fetchedAuthor.image.length > 1) {
+        if (user?.showAuthorImage && fetchedAuthor.image.length > 1) {
           ctx.replyWithPhoto(url + fetchedAuthor.image, {
             caption: fetchedAuthor.title,
             parse_mode: 'HTML',

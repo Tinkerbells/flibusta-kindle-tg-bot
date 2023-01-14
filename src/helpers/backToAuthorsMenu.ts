@@ -2,6 +2,7 @@ import { BotContext } from '..'
 import { authorListMenu } from '../menus'
 
 export const backToAuthorsMenu = async (ctx: BotContext) => {
+  ctx.session.page = 1
   await ctx.reply(
     `<b>${ctx.t('author_search_success', {
       count: ctx.session.authors.length,

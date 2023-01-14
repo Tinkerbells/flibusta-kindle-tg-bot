@@ -13,6 +13,7 @@ import { scenes } from './scenes/scenes'
 import { env } from './env/env'
 import { rootMenu, settingsMenu } from './menus'
 import { IAuthor, IAuthorListItem } from './types/author'
+import { client } from './db/client'
 
 export type SessionData = ScenesSessionFlavor & {
   back: string
@@ -42,11 +43,13 @@ const i18n = new I18n<BotContext>({
 })
 
 const bot = new Bot<BotContext>(env.BOT_TOKEN)
+
 bot.use(
   session({
     initial: () => ({}),
   })
 )
+
 bot.use(i18n)
 bot.use(scenes.manager())
 bot.use(rootMenu)
@@ -54,23 +57,40 @@ bot.use(scenes)
 
 bot.command('start', async (ctx) => {
   await ctx.reply(ctx.t('welcome'))
+  if (ctx.from) {
+    const user = await client.user.findUnique({
+      where: { userId: ctx.from.id.toString() },
+    })
+    if (!user) {
+      await client.user.create({
+        data: {
+          userId: ctx.from.id.toString(),
+        },
+      })
+      console.log(`New user with ${ctx.from.id} was created`)
+    }
+  }
 })
 
 bot.command('help', async (ctx) => {
+  await ctx.scenes.abort()
   await ctx.reply(ctx.t('help'))
 })
 
 bot.command('book', async (ctx) => {
+  await ctx.scenes.abort()
   ctx.session.userId = ctx.from?.id.toString() || ''
   await ctx.scenes.enter('get-book-scene')
 })
 
 bot.command('author', async (ctx) => {
+  await ctx.scenes.abort()
   ctx.session.userId = ctx.from?.id.toString() || ''
   await ctx.scenes.enter('get-author')
 })
 
 bot.command('settings', async (ctx) => {
+  await ctx.scenes.abort()
   await ctx.reply(ctx.t('settings'), { reply_markup: settingsMenu })
 })
 
