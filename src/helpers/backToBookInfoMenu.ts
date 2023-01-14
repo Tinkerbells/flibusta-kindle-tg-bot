@@ -1,6 +1,6 @@
 import { BotContext } from '..'
 import { env } from '../env/env'
-import { bookInfoMenu } from '../menus/bookInfoMenu'
+import { bookInfoMenu } from '../menus'
 
 const url = env.FLIBUSTA_URL
 

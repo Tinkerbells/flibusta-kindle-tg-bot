@@ -2,7 +2,7 @@ import { MenuRange } from '@grammyjs/menu'
 import { BotContext } from '..'
 import { backToBookInfoMenu } from './backToBookInfoMenu'
 
-export const createSendBookMenu = (
+export const createBackToBookInfo = (
   ctx: BotContext,
   range: MenuRange<BotContext>
 ) => {

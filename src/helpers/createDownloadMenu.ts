@@ -8,18 +8,15 @@ export const createDownloadMenu = (
   range: MenuRange<BotContext>
 ) => {
   const book = ctx.session.book
-  book?.downloadLinks.map((link) => {
+  book.downloadLinks.map((link) => {
     range
       .text('📥 ' + link, (ctx) => {
         ctx.replyWithDocument(
-          new InputFile(
-            new URL(`${book.href}/${link}`),
-            `${book.title}.${link}`
-          )
+          new InputFile(new URL(`${book.url}/${link}`), `${book.title}.${link}`)
         )
       })
       .row()
   })
-  range.back(ctx.t('back')).row()
+  range.text(ctx.t('back'), (ctx) => ctx.menu.nav('book-info-menu')).row()
   return range
 }

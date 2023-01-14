@@ -1,16 +1,17 @@
-import { Menu, MenuRange } from '@grammyjs/menu'
+import { MenuRange } from '@grammyjs/menu'
 import { env } from 'process'
 import { BotContext } from '..'
 import { LIMIT } from '../consts'
-import { bookInfoMenu } from '../menus/bookInfoMenu'
+import { bookInfoMenu } from '../menus'
 import { getBook } from '../scrapper'
 import { IBookListItem } from '../types/book'
+import { createPagination } from './createPagination'
 
 const url = env.FLIBUSTA_URL
 
 const limit = LIMIT
 
-export const createBooksPaginationMenu = async (
+export const createBooksListMenu = async (
   ctx: BotContext,
   range: MenuRange<BotContext>
 ) => {
@@ -22,37 +23,6 @@ export const createBooksPaginationMenu = async (
   return range
 }
 
-const createPagination = (
-  range: MenuRange<BotContext>,
-  maxPages: number,
-  page: number
-) => {
-  if (page == 1 && maxPages !== 1) {
-    range.text('➡️', async (ctx) => {
-      ctx.session.page++
-      ctx.menu.update()
-    })
-  }
-  if (page > 1 && page != maxPages) {
-    range
-      .text('⬅️', async (ctx) => {
-        ctx.session.page--
-        ctx.menu.update()
-      })
-      .text(`${page}/${maxPages}`, () => {})
-      .text('➡️', async (ctx) => {
-        ctx.session.page++
-        ctx.menu.update()
-      })
-  }
-  if (page == maxPages && maxPages !== 1) {
-    range.text('⬅️', async (ctx) => {
-      ctx.session.page--
-      ctx.menu.update()
-    })
-  }
-  return range
-}
 const createBooksList = (
   range: MenuRange<BotContext>,
   books: IBookListItem[],
@@ -61,8 +31,9 @@ const createBooksList = (
   books.slice(page * limit - limit, page * limit).map((book) =>
     range
       .text('📙' + book.title, async (ctx) => {
-        const fetchedBook = await getBook(book.href)
+        const fetchedBook = await getBook(book.url)
         ctx.session.book = fetchedBook
+        ctx.session.back = 'books'
         const text = ctx.t('book_info', {
           title: fetchedBook.title,
           author: fetchedBook.author,

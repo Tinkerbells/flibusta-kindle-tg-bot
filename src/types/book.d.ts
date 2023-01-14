@@ -1,5 +1,5 @@
 export interface IBook {
-  href: string
+  url: string
   title: string
   author: string
   authorLink: string
@@ -14,6 +14,6 @@ export interface IBook {
 }
 
 interface IBookListItem {
-  href: string
+  url: string
   title: string
 }

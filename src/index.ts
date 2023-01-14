@@ -1,16 +1,28 @@
-import { Bot, Context, session, SessionFlavor } from 'grammy'
+import {
+  Bot,
+  Context,
+  GrammyError,
+  HttpError,
+  session,
+  SessionFlavor,
+} from 'grammy'
 import { ScenesSessionFlavor, ScenesFlavor } from 'grammy-scenes'
 import { I18n, I18nFlavor } from '@grammyjs/i18n'
 import { IBook, IBookListItem } from './types/book'
 import { scenes } from './scenes/scenes'
-import { booksMenu } from './menus/booksPaginationMenu'
 import { env } from './env/env'
+import { rootMenu, settingsMenu } from './menus'
+import { IAuthor, IAuthorListItem } from './types/author'
 
 export type SessionData = ScenesSessionFlavor & {
+  back: string
   userId: string
+  kindleEmail: string
   page: number
   book: IBook
   books: IBookListItem[]
+  authors: IAuthorListItem[]
+  author: IAuthor
 }
 
 export type BotContext = Context &
@@ -37,7 +49,7 @@ bot.use(
 )
 bot.use(i18n)
 bot.use(scenes.manager())
-bot.use(booksMenu)
+bot.use(rootMenu)
 bot.use(scenes)
 
 bot.command('start', async (ctx) => {
@@ -53,4 +65,26 @@ bot.command('book', async (ctx) => {
   await ctx.scenes.enter('get-book-scene')
 })
 
+bot.command('author', async (ctx) => {
+  ctx.session.userId = ctx.from?.id.toString() || ''
+  await ctx.scenes.enter('get-author')
+})
+
+bot.command('settings', async (ctx) => {
+  await ctx.reply(ctx.t('settings'), { reply_markup: settingsMenu })
+})
+
 bot.start()
+
+bot.catch((err) => {
+  const ctx = err.ctx
+  console.error(`Error while handling update ${ctx.update.update_id}:`)
+  const e = err.error
+  if (e instanceof GrammyError) {
+    console.error('Error in request:', e.description)
+  } else if (e instanceof HttpError) {
+    console.error('Could not contact Telegram:', e)
+  } else {
+    console.error('Unknown error:', e)
+  }
+})

@@ -1,5 +1,5 @@
 import { BotContext } from '..'
-import { booksMenu } from '../menus/booksPaginationMenu'
+import { booksListMenu } from '../menus'
 
 export const backToBooksMenu = async (ctx: BotContext) => {
   await ctx.reply(
@@ -8,8 +8,9 @@ export const backToBooksMenu = async (ctx: BotContext) => {
     })}</b>`,
     {
       parse_mode: 'HTML',
-      reply_markup: booksMenu,
+      reply_markup: booksListMenu,
     }
   )
   await ctx.deleteMessage()
+  await ctx.answerCallbackQuery()
 }

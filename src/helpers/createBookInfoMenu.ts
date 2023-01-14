@@ -2,6 +2,7 @@ import { MenuRange } from '@grammyjs/menu'
 import { InputFile } from 'grammy'
 import { BotContext } from '..'
 import { downloadBook } from '../utils/downloadBook'
+import { backToAuthorBooksMenu } from './backToAuthorBooksMenu'
 import { backToBooksMenu } from './backToBooksMenu'
 
 export const createBookInfoMenu = (
@@ -17,7 +18,7 @@ export const createBookInfoMenu = (
       .text('📥 ' + ext, (ctx) => {
         ctx.replyWithDocument(
           new InputFile(
-            new URL(`${ctx.session.book.href}/download`),
+            new URL(`${ctx.session.book.url}/download`),
             `${ctx.session.book.title}.${ext}`
           )
         )
@@ -31,7 +32,7 @@ export const createBookInfoMenu = (
     range
       .text(ctx.t('book_sent_to_kindle'), (ctx) => {
         downloadBook(
-          `${ctx.session.book.href}/${ext !== 'epub' ? 'download' : ext}`,
+          `${ctx.session.book.url}/${ext !== 'epub' ? 'download' : ext}`,
           ctx
         ).then(() => {
           ctx.deleteMessage()
@@ -42,7 +43,12 @@ export const createBookInfoMenu = (
   }
   range
     .text(ctx.t('back'), async (ctx) => {
-      await backToBooksMenu(ctx)
+      const back = ctx.session.back
+      if (back === 'books') {
+        await backToBooksMenu(ctx)
+      } else if (back === 'author') {
+        await backToAuthorBooksMenu(ctx)
+      }
     })
     .row()
   return range
