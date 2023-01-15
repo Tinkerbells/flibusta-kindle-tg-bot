@@ -31,8 +31,8 @@ changeEmailScene.wait().on('message:text', async (ctx) => {
         }
         ctx.reply(ctx.t('email_saved'))
       })
-    ctx.scene.exit()
   } else {
     await ctx.reply(ctx.t('email_error'))
   }
+  ctx.scene.exit()
 })

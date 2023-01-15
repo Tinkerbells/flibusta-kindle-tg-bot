@@ -9,6 +9,7 @@ import { getExtension } from '../utils/getExtension'
 import { sendBook } from '../utils/sendBook'
 
 export const sendBookScene = new Scene<BotContext>('send-book')
+
 sendBookScene.label('start')
 
 sendBookScene.do(async (ctx) => {
@@ -46,6 +47,7 @@ sendBookScene.wait().on('message:text', async (ctx) => {
       ctx.scene.resume()
     } else {
       await ctx.reply(ctx.t('email_error'))
+      ctx.scene.exit()
     }
   }
 })

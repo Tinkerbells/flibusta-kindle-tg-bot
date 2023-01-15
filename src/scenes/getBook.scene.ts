@@ -13,7 +13,7 @@ getBookScene.do(async (ctx) => {
 
 getBookScene.wait().on('message:text', async (ctx) => {
   if (ctx.message.text[0] !== '/') {
-    ctx.session.authors = await getBooks(ctx.message.text)
+    ctx.session.books = await getBooks(ctx.message.text)
     if (ctx.session.books.length >= 1) {
       ctx.session.page = 1
       await ctx.reply(
@@ -25,17 +25,15 @@ getBookScene.wait().on('message:text', async (ctx) => {
           reply_markup: booksListMenu,
         }
       )
-      ctx.scene.exit()
     } else {
       await ctx.reply(ctx.t('book_search_fail'), {
         parse_mode: 'HTML',
       })
-      ctx.scene.exit()
     }
   } else {
     await ctx.reply(ctx.t('search_error'), {
       parse_mode: 'HTML',
     })
-    ctx.scene.exit()
   }
+  ctx.scene.exit()
 })

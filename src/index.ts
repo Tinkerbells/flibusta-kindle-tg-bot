@@ -6,6 +6,9 @@ import {
   session,
   SessionFlavor,
 } from 'grammy'
+import { autoRetry } from '@grammyjs/auto-retry'
+import { run } from '@grammyjs/runner'
+import { apiThrottler } from '@grammyjs/transformer-throttler'
 import { ScenesSessionFlavor, ScenesFlavor } from 'grammy-scenes'
 import { I18n, I18nFlavor } from '@grammyjs/i18n'
 import { IBook, IBookListItem } from './types/book'
@@ -43,6 +46,15 @@ const i18n = new I18n<BotContext>({
 })
 
 const bot = new Bot<BotContext>(env.BOT_TOKEN)
+
+const throttler = apiThrottler()
+bot.api.config.use(throttler)
+bot.api.config.use(
+  autoRetry({
+    maxRetryAttempts: 3,
+    maxDelaySeconds: 3,
+  })
+)
 
 bot.use(
   session({
@@ -94,7 +106,7 @@ bot.command('settings', async (ctx) => {
   await ctx.reply(ctx.t('settings'), { reply_markup: settingsMenu })
 })
 
-bot.start()
+run(bot)
 
 bot.catch((err) => {
   const ctx = err.ctx

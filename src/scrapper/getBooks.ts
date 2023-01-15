@@ -5,7 +5,9 @@ import { IBookListItem } from '../types/book'
 const url = env.FLIBUSTA_URL
 
 export const getBooks = async (bookName: string) => {
-  const browser: Browser = await puppeteer.launch()
+  const browser: Browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  })
   const page = await browser.newPage()
   await page.goto(`${url}/booksearch?ask=${bookName}&chb=on`)
 

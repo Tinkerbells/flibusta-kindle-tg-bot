@@ -5,7 +5,9 @@ import { IAuthorListItem } from '../types/author'
 const url = env.FLIBUSTA_URL
 
 export const getAuthors = async (authorName: string) => {
-  const browser: Browser = await puppeteer.launch()
+  const browser: Browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  })
   const page = await browser.newPage()
   await page.goto(`${url}/booksearch?ask=${authorName}&cha=on`)
 

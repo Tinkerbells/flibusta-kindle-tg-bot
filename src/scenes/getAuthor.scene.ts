@@ -25,17 +25,15 @@ getAuthorScene.wait().on('message:text', async (ctx) => {
           reply_markup: authorListMenu,
         }
       )
-      ctx.scene.exit()
     } else {
       await ctx.reply(ctx.t('author_search_fail'), {
         parse_mode: 'HTML',
       })
-      ctx.scene.exit()
     }
   } else {
     await ctx.reply(ctx.t('search_error'), {
       parse_mode: 'HTML',
     })
-    ctx.scene.exit()
   }
+  ctx.scene.exit()
 })
