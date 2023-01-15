@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  flibusta-bot:
+    build:
+      context: .
+    working_dir: /home/node/app
+    depends_on:
+      - postgres
+    network_mode: host
+    restart: always
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    network_mode: host
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flibusta-bot-bd
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  postgres:
+
