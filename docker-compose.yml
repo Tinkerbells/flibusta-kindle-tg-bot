@@ -7,13 +7,13 @@ services:
     working_dir: /home/node/app
     depends_on:
       - postgres
-    network_mode: host
+    network_mode: "container:gluetun"
     restart: always
 
   postgres:
     image: postgres:15-alpine
     container_name: postgres
-    network_mode: host
+    network_mode: "container:gluetun"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
