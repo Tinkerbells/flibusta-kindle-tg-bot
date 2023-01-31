@@ -3,16 +3,16 @@ import { BotContext } from '..'
 import { pb } from '../db/client'
 import { backToBookInfoMenu } from './backToBookInfoMenu'
 
-export const createSaveEmailMenu = (
+export const createSaveEmailMenu = async (
   ctx: BotContext,
   range: MenuRange<BotContext>
 ) => {
+  const user = await pb
+    .collection('users')
+    .getFirstListItem(`userId=${ctx.session.userId}`)
   range
     .text(
       async (ctx) => {
-        const user = await pb
-          .collection('users')
-          .getFirstListItem(`userId=${ctx.session.userId}`)
         return user?.email ? ctx.t('email_saved_short') : ctx.t('yes')
       },
       async (ctx) => {
@@ -24,7 +24,7 @@ export const createSaveEmailMenu = (
         )
           await pb
             .collection('users')
-            .create({
+            .update(user.id, {
               userId: ctx.from.id,
               email: kindleEmail,
             })

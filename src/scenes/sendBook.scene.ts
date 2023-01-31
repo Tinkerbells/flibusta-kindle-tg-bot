@@ -70,7 +70,7 @@ sendBookScene.wait().on('callback_query:data', async (ctx) => {
 })
 
 sendBookScene.do(async (ctx) => {
-  ctx.reply('Сохранить Kindle почту для следующих отправок?', {
+  ctx.reply(ctx.t('email_save_req'), {
     reply_markup: saveEmailMenu,
   })
 })
