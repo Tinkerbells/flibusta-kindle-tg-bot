@@ -1,3 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { env } from '../env/env'
+const PocketBase = require('pocketbase/cjs')
 
-export const client = new PrismaClient({})
+export const pb = new PocketBase(env.POCKETBASE_URL)

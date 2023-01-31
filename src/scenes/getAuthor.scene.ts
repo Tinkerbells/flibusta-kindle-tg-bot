@@ -4,7 +4,6 @@ import { authorListMenu } from '../menus'
 import { getAuthors } from '../scrapper'
 
 export const getAuthorScene = new Scene<BotContext>('get-author')
-
 getAuthorScene.label('start')
 
 getAuthorScene.do(async (ctx) => {

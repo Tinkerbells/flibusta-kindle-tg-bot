@@ -1,16 +1,15 @@
 import { MenuRange } from '@grammyjs/menu'
 import { BotContext } from '..'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 
 export const createSettingsMenu = async (
   ctx: BotContext,
   range: MenuRange<BotContext>
 ) => {
   if (ctx.from) {
-    const userId = ctx.from.id.toString()
-    const user = await client.user.findUnique({
-      where: { userId: userId },
-    })
+    const user = await pb
+      .collection('users')
+      .getFirstListItem(`userId=${ctx.from.id}`)
     range
       .text(
         (ctx) => (user?.email ? ctx.t('email_change') : ctx.t('email_add')),
@@ -23,11 +22,8 @@ export const createSettingsMenu = async (
             value: user?.showBookImage ? '✅' : '❌',
           }),
         async (ctx) => {
-          await client.user.update({
-            where: { userId: ctx.from.id.toString() },
-            data: {
-              showBookImage: !user?.showBookImage,
-            },
+          await pb.collection('users').update(user.id, {
+            showBookImage: !user?.showBookImage,
           })
           ctx.menu.update()
         }
@@ -39,11 +35,8 @@ export const createSettingsMenu = async (
             value: user?.showAuthorImage ? '✅' : '❌',
           }),
         async (ctx) => {
-          await client.user.update({
-            where: { userId: ctx.from.id.toString() },
-            data: {
-              showAuthorImage: !user?.showAuthorImage,
-            },
+          await pb.collection('users').update(user.id, {
+            showAuthorImage: !user?.showAuthorImage,
           })
           ctx.menu.update()
         }

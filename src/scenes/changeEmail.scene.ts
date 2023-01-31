@@ -1,5 +1,5 @@
 import { Scene } from 'grammy-scenes'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { BotContext } from '../index'
 import { emailSchema } from '../schemas/emailSchema'
 
@@ -12,18 +12,14 @@ changeEmailScene.do(async (ctx) => {
 changeEmailScene.wait().on('message:text', async (ctx) => {
   const userId = ctx.from.id.toString()
   const email = ctx.message.text
-  const user = await client.user.findUnique({
-    where: { userId: userId },
-  })
   if (emailSchema.safeParse(email).success && email.includes('@kindle.com')) {
-    await client.user
-      .update({
-        where: {
-          userId: userId,
-        },
-        data: {
-          email: email,
-        },
+    const user = await pb
+      .collection('users')
+      .getFirstListItem(`userId=${userId}`)
+    await pb
+      .collection('users')
+      .update(user.id, {
+        email: email,
       })
       .then(() => {
         if (user?.email) {

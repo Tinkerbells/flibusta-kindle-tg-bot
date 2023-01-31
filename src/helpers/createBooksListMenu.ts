@@ -2,7 +2,7 @@ import { MenuRange } from '@grammyjs/menu'
 import { env } from 'process'
 import { BotContext } from '..'
 import { LIMIT } from '../consts'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { bookInfoMenu } from '../menus'
 import { getBook } from '../scrapper'
 import { IBookListItem } from '../types/book'
@@ -43,9 +43,10 @@ const createBooksList = (
           size: fetchedBook.size,
           annotation: fetchedBook.annotation,
         })
-        const user = await client.user.findUnique({
-          where: { userId: ctx.from.id.toString() },
-        })
+        const user = await pb
+          .collection('users')
+          .getFirstListItem(`userId=${ctx.from.id}`)
+
         if (user?.showBookImage && fetchedBook.image.length > 1) {
           ctx.replyWithPhoto(url + fetchedBook.image, {
             caption: text,

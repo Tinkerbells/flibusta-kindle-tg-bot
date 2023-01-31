@@ -1,0 +1,58 @@
+[
+  {
+    "id": "4p4wl2rja8wfsnf",
+    "name": "users",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "j0qtcjgf",
+        "name": "userId",
+        "type": "number",
+        "system": false,
+        "required": true,
+        "unique": true,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "mbumu9os",
+        "name": "email",
+        "type": "email",
+        "system": false,
+        "required": false,
+        "unique": true,
+        "options": {
+          "exceptDomains": null,
+          "onlyDomains": null
+        }
+      },
+      {
+        "id": "es73kcxj",
+        "name": "showBookImage",
+        "type": "bool",
+        "system": false,
+        "required": false,
+        "unique": false,
+        "options": {}
+      },
+      {
+        "id": "1qxez9k7",
+        "name": "showAuthorImage",
+        "type": "bool",
+        "system": false,
+        "required": false,
+        "unique": false,
+        "options": {}
+      }
+    ],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
+    "options": {}
+  }
+]

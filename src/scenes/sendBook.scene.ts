@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { Scene } from 'grammy-scenes'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { BotContext } from '../index'
 import { backToBookInfoMenu, saveEmailMenu } from '../menus'
 import { emailSchema } from '../schemas/emailSchema'
@@ -13,9 +13,9 @@ export const sendBookScene = new Scene<BotContext>('send-book')
 sendBookScene.label('start')
 
 sendBookScene.do(async (ctx) => {
-  const user = await client.user.findUnique({
-    where: { userId: ctx.session.userId || ' ' },
-  })
+  const user = await pb
+    .collection('users')
+    .getFirstListItem(`userId=${ctx.session.userId}`)
   if (!user?.email) {
     await ctx.reply(ctx.t('email_request'), {
       reply_markup: backToBookInfoMenu,

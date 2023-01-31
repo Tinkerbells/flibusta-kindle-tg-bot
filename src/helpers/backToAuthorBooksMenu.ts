@@ -1,5 +1,5 @@
 import { BotContext } from '..'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { env } from '../env/env'
 import { authorBooksMenu } from '../menus'
 
@@ -8,9 +8,7 @@ const url = env.FLIBUSTA_URL
 export const backToAuthorBooksMenu = async (ctx: BotContext) => {
   const author = ctx.session.author
   const user = ctx.from
-    ? await client.user.findUnique({
-        where: { userId: ctx.from.id.toString() },
-      })
+    ? await pb.collection('users').getFirstListItem(`userId=${ctx.from.id}`)
     : null
   if (user?.showAuthorImage && author.image.length > 1) {
     ctx.replyWithPhoto(url + author.image, {

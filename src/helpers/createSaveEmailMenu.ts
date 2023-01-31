@@ -1,6 +1,6 @@
 import { MenuRange } from '@grammyjs/menu'
 import { BotContext } from '..'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { backToBookInfoMenu } from './backToBookInfoMenu'
 
 export const createSaveEmailMenu = (
@@ -10,9 +10,9 @@ export const createSaveEmailMenu = (
   range
     .text(
       async (ctx) => {
-        const user = await client.user.findUnique({
-          where: { userId: ctx.session.userId || ' ' },
-        })
+        const user = await pb
+          .collection('users')
+          .getFirstListItem(`userId=${ctx.session.userId}`)
         return user?.email ? ctx.t('email_saved_short') : ctx.t('yes')
       },
       async (ctx) => {
@@ -22,12 +22,11 @@ export const createSaveEmailMenu = (
           ctx.session.userId &&
           ctx.session.kindleEmail
         )
-          await client.user
+          await pb
+            .collection('users')
             .create({
-              data: {
-                userId: ctx.session.userId,
-                email: ctx.session.kindleEmail,
-              },
+              userId: ctx.from.id,
+              email: kindleEmail,
             })
             .then(() => {
               ctx.session.kindleEmail = ''

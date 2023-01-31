@@ -2,7 +2,7 @@ import { MenuRange } from '@grammyjs/menu'
 import { env } from 'process'
 import { BotContext } from '..'
 import { LIMIT } from '../consts'
-import { client } from '../db/client'
+import { pb } from '../db/client'
 import { authorBooksMenu } from '../menus/authorBooksMenu'
 import { getAuthor } from '../scrapper'
 import { IAuthorListItem } from '../types/author'
@@ -31,9 +31,9 @@ const createAuthorsList = (
   authors.slice(page * limit - limit, page * limit).map((author) =>
     range
       .text('📙' + author.title, async (ctx) => {
-        const user = await client.user.findUnique({
-          where: { userId: ctx.from.id.toString() },
-        })
+        const user = await pb
+          .collection('users')
+          .getFirstListItem(`userId=${ctx.from.id}`)
         const fetchedAuthor = await getAuthor(author.url)
         ctx.session.author = fetchedAuthor
         ctx.session.page = 1

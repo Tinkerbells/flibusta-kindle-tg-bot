@@ -8,7 +8,8 @@ const schema = z.object({
   DOWNLOAD_DIR: z.string(),
   EMAIL_ADDRESS: z.string().email(),
   EMAIL_PASSWORD: z.string(),
-  DATABASE_URL: z.string().url(),
+  // DATABASE_URL: z.string().url(),
+  POCKETBASE_URL: z.string().url(),
 })
 
 const parsed = schema.safeParse(process.env)

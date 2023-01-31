@@ -16,8 +16,7 @@ import { scenes } from './scenes/scenes'
 import { env } from './env/env'
 import { rootMenu, settingsMenu } from './menus'
 import { IAuthor, IAuthorListItem } from './types/author'
-import { client } from './db/client'
-
+import { pb } from './db/client'
 export type SessionData = ScenesSessionFlavor & {
   back: string
   userId: string
@@ -70,14 +69,13 @@ bot.use(scenes)
 bot.command('start', async (ctx) => {
   await ctx.reply(ctx.t('welcome'))
   if (ctx.from) {
-    const user = await client.user.findUnique({
-      where: { userId: ctx.from.id.toString() },
-    })
-    if (!user) {
-      await client.user.create({
-        data: {
-          userId: ctx.from.id.toString(),
-        },
+    try {
+      await pb.collection('users').getFirstListItem(`userId=${ctx.from.id}`)
+    } catch (err) {
+      await pb.collection('users').create({
+        userId: ctx.from.id,
+        showBookImage: true, // default is true
+        showAuthorImage: true, // default is true
       })
       console.log(`New user with ${ctx.from.id} was created`)
     }

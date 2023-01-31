@@ -16,14 +16,13 @@
     "@grammyjs/menu": "^1.1.2",
     "@grammyjs/runner": "^1.0.4",
     "@grammyjs/transformer-throttler": "^1.2.1",
-    "@prisma/client": "^4.8.1",
     "@types/nodemailer": "^6.4.7",
     "dotenv": "^16.0.3",
     "grammy": "^1.13.0",
     "grammy-scenes": "^7.3.0",
     "node-downloader-helper": "^2.1.6",
     "nodemailer": "^6.8.0",
-    "prisma": "^4.8.1",
+    "pocketbase": "^0.10.1",
     "puppeteer": "^19.4.1",
     "ts-node": "^10.9.1",
     "zod": "^3.20.2"
@@ -31,5 +30,10 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "nodemon": "^2.0.20"
+  },
+  "exports": {
+    ".": "./dist/pocketbase.cjs.js",
+    "./cjs": "./dist/pocketbase.cjs.js",
+    "./umd": "./dist/pocketbase.umd.js"
   }
 }
