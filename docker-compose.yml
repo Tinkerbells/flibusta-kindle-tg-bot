@@ -6,21 +6,20 @@ services:
       context: .
     working_dir: /home/node/app
     depends_on:
-      - postgres
+      - pocketbase
     network_mode: "container:gluetun"
     restart: always
 
-  postgres:
-    image: postgres:15-alpine
-    container_name: postgres
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: pocketbase
+    restart: unless-stopped
     network_mode: "container:gluetun"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: flibusta-bot-bd
     volumes:
-      - postgres:/var/lib/postgresql/data
-
-volumes:
-  postgres:
+      - /path/to/data:/pb_data
+    healthcheck: #optional (recommended) since v0.10.0
+      test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
 

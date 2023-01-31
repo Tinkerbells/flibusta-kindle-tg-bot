@@ -11,15 +11,11 @@ WORKDIR /home/node/app
 
 COPY package*.json ./
 
-COPY prisma ./prisma/
-
 COPY .env ./
 
 COPY package*.json ./
 
 RUN npm install
-
-RUN npx prisma generate 
 
 COPY . .
 
