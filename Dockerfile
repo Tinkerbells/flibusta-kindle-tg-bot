@@ -1,7 +1,7 @@
-FROM node:18-bullseye-slim
+FROM node:16-alpine
 
-RUN apt-get update && \
-    apt-get install -y chromium
+RUN apk update && \
+    apk add chromium
 
 RUN mkdir -p /home/node/app/node_modules 
 

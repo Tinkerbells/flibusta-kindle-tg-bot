@@ -7,6 +7,7 @@ const url = env.FLIBUSTA_URL
 export const getAuthors = async (authorName: string) => {
   const browser: Browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: '/usr/bin/chromium-browser',
   })
   const page = await browser.newPage()
   await page.goto(`${url}/booksearch?ask=${authorName}&cha=on`)
