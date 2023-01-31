@@ -8,7 +8,7 @@ export const getAuthor = async (authorLink: string) => {
   const authorUrl = `${url}/${authorLink}?lang=__&order=a&hg1=1&hg=1&sa1=1&hr1=1`
   const browser: Browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: '/usr/bin/chromium-browser',
+    executablePath: '/usr/bin/chromium',
   })
   const page = await browser.newPage()
   await page.goto(authorUrl).then(() => {})

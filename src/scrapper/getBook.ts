@@ -11,7 +11,7 @@ export const getBook = async (bookLink: string) => {
   const bookUrl = `${url}/${bookLink}`
   const browser: Browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: '/usr/bin/chromium-browser',
+    executablePath: '/usr/bin/chromium',
   })
   const page = await browser.newPage()
   await page.goto(bookUrl)
